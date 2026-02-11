@@ -1,0 +1,98 @@
+/* Apply to all */
+* {
+  box-sizing: border-box;
+}
+
+/* Headers */
+h1 {
+  text-align: center;
+  margin-top: 40px;
+  margin-bottom: 10px;
+  font-size: 2.2rem;
+}
+
+h2 {
+  margin-top: 40px;
+  border-bottom: 2px solid #e0e0e0;
+  padding-bottom: 10px;
+}
+
+/* Navigation bar */
+nav {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  background-color: #ffffff;
+  padding: 12px 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.5);
+  margin-bottom: 30px;
+}
+
+nav a {
+  text-decoration: none;
+  font-size: 1rem;
+  font-weight: 500;
+  color: black;
+}
+
+nav a:hover {
+  text-decoration: underline;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  margin: 30px;
+}
+
+p {
+  font-size: 1.2rem;
+  text-align: center;
+}
+
+/* Form container */
+form {
+  background-color: lightgrey;
+  padding: 25px 30px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+  max-width: 500px;
+  margin: 40px auto;
+}
+
+form label {
+  font-size: 1.2rem;
+  padding-left: 10px;
+  display: block;
+}
+
+form input[type="text"] {
+  width: 100%;
+  margin-left: 10px;
+}
+
+/* List container */
+ul {
+  font-size: 1.2rem;
+  padding-left: 20px;
+}
+
+li {
+  margin-bottom: 8px;
+}
+
+/* Buttons */
+button {
+  background-color: #0077cc;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 6px 8px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  margin-left: 10px;
+}
+
+button:hover {
+  background-color: #005fa3;
+}
