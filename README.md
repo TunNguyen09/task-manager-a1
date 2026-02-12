@@ -3,9 +3,9 @@
 
 - Documentation:
     - Functions:
-        - View tasks
-        - Add tasks
-        - Edit tasks
+        - View tasks, using GET
+        - Add tasks, using POST
+        - Edit tasks, using PATCH
         - Delete tasks, with error prevention
     - How to run:
         - Start server with npm start
