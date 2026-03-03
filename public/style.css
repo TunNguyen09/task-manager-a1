@@ -71,6 +71,11 @@ form input[type="text"] {
   margin-left: 10px;
 }
 
+form input[type="date"] {
+  width: 100%;
+  margin-left: 10px;
+}
+
 /* List container */
 ul {
   font-size: 1.2rem;

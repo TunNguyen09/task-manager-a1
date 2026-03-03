@@ -1,3 +1,4 @@
+import CheckTime from "./Component/CheckTime.js";
 
 async function loadTasks() {
   const list = document.getElementById("task-list");
@@ -25,6 +26,10 @@ async function loadTasks() {
       name.id = "sp"+task.id;
       name.textContent = task.text;
 
+      const timeDiv = document.createElement("div");
+      timeDiv.className = "daysLeft";
+      timeDiv.textContent = CheckTime({ time: task.time });
+
       const editbtn = document.createElement("button");
       editbtn.id = "eb"+task.id;
       editbtn.textContent = "Edit";
@@ -44,6 +49,7 @@ async function loadTasks() {
       });
 
       li.appendChild(name);
+      li.appendChild(timeDiv);
       li.appendChild(editbtn);
       li.appendChild(btn);
       list.appendChild(li);
@@ -102,23 +108,28 @@ function setupAddForm() {
 
   const input = document.getElementById("task-input");
   const message = document.getElementById("message");
+  const time = document.getElementById("task-date");
 
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
     const text = input.value.trim();
+    const deadline = time?.value || null;
+
     if (!text) return;
 
     try {
       const res = await fetch("/api/tasks", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text })
+        body: JSON.stringify({ text, time:deadline })
       });
 
       if (res.ok) {
         input.value = "";
+        time.value = "";
         message.textContent = "Task added!";
+        loadTasks(); // refresh list
       } else {
         message.textContent = "Could not add task.";
       }

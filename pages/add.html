@@ -18,12 +18,14 @@
   <form id="task-form">
     <label for="task-input">Task:</label><br>
     <input type="text" id="task-input" required>
+    <label for="task-date">When is it due?</label>
+    <input type="date" id="task-date" required>
     <br><br>
     <button type="submit">Add Task</button>
   </form>
 
   <p id="message"></p>
 
-  <script src="/app.js"></script>
+  <script type="module" src="/app.js"></script>
 </body>
 </html>

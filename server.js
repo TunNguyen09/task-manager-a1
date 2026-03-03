@@ -11,7 +11,7 @@ app.use(express.static("public"));
 
 // JSON data 
 let tasks = [
-  { id: 1, text: "Example task" },
+  { id: 1, text: "Example task", time: Date.now() },
 ];
 
 // HTML routes
@@ -35,7 +35,7 @@ app.get("/api/tasks", (req, res) => {
 
 // Adding new task
 app.post("/api/tasks", (req, res) => {
-  const { text } = req.body;
+  const { text, time } = req.body;
   if (!text) {
     return res.status(400).json({ error: "Task text required" });
   }
@@ -43,6 +43,7 @@ app.post("/api/tasks", (req, res) => {
   const newTask = {
     id: Date.now(),
     text,
+    time: time ? new Date(time).toISOString(): null
   };
   
   console.log(newTask);
