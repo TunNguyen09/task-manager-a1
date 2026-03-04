@@ -2,12 +2,12 @@ const express = require("express");
 const path = require("path");
 
 const app = express();
-const PORT = 3000;
+const PORT = 8080;
 
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded())
-app.use(express.static("public"));
+app.use(express.static(__dirname, "..", "frontend", "public"));
 
 // JSON data 
 let tasks = [
@@ -16,15 +16,15 @@ let tasks = [
 
 // HTML routes
 app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "pages", "index.html"));
+  res.sendFile(path.join(__dirname, "..", "frontend", "pages", "index.html"));
 });
 
 app.get("/add", (req, res) => {
-  res.sendFile(path.join(__dirname, "pages", "add.html"));
+  res.sendFile(path.join(__dirname, "..", "frontend", "pages", "add.html"));
 });
 
 app.get("/about", (req, res) => {
-  res.sendFile(path.join(__dirname, "pages", "about.html"));
+  res.sendFile(path.join(__dirname, "..", "frontend", "pages", "about.html"));
 });
 
 // REST API
