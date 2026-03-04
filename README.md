@@ -8,9 +8,11 @@
         - Edit tasks
         - Delete tasks, with error prevention
     - How to run:
-        - Start server with npm start
-        - Go to http://localhost:3000
-        - index.html page should be displayed with an Example task
+        - Start server in the back end folder with npm run start
+        - Go to http://localhost:8080
+        - Start react in front end server with npm run dev
+        - It will start at http://locoalhost:5173
+        - App.jsx should be displayed with an Example task
         - Home page, Add task, and About page can be reached from the top navagation bar
         - Tasks can be edited and deleted using the buttons
 
