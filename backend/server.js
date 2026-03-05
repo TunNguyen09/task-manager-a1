@@ -2,20 +2,54 @@ const express = require("express");
 const path = require("path");
 const cors = require("cors");
 const app = express();
+const { default: mongoose } = require('mongoose');
+const Task = require("./models/Task");
 
 const PORT = 8080;
+const DB_HOST = 'localhost';
+const DB_PORT = 27017;
 
 app.use(cors());
 
+//db connect
+const dbURL = `mongodb://${DB_HOST}:${DB_PORT}/task_manager`;
+mongoose.connect(dbURL);
+
+const db = mongoose.connection;
+db.on('error', function(e) {
+  console.log('error connecting');
+});
+db.on('open', function() {
+  console.log('db connected');
+})
+
 // Middleware
-app.use(express.json());
-app.use(express.urlencoded())
+// app.use(express.json());
+// app.use(express.urlencoded())
 
 // JSON data 
 let tasks = [
-  { id: 1, text: "Example task", time: Date.now() },
-  { id: 2, text: "Example task 2", time: Date.now() },
+  { id: 1, text: "Example task", deadline: Date.now() },
+  { id: 2, text: "Example task 2", deadline: Date.now() },
 ];
+
+async function addExampleTasks(){
+  const taskCount = await Task.countDocuments();
+
+  if(taskCount === 0){
+    console.log('Adding example tasks...');
+    tasks.forEach(task => {
+      const newTask = new Task(task);
+      newTask.save()
+        .then(() => console.log('task added'))
+        .catch(err => console.error('error adding task: ',task.id));
+    });
+  }else{
+    console.log('Tasks exist');
+    return;
+  }
+};
+addExampleTasks();
 
 app.get("/", (req, res) => {
   res.send("Backend is running. Try /api/tasks");

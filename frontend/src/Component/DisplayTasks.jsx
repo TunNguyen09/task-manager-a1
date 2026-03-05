@@ -40,14 +40,19 @@ function DisplayTasks({ refreshTrigger }) {
             </nav>
 
             <h2>List of current tasks</h2>
+            <ol>
             {tasks.map(task => {
                 return (
                     <div key={task.id}>
-                        {task.text}<br/>
+                        <li>
+                        {task.text}
+                        <span style={{color: 'red'}}> Due: </span>
                         <CheckTime time={task.time}/>
+                        </li>
                     </div>
                 );
             })}
+            </ol>
         </>
     )
 };
