@@ -10,7 +10,7 @@ function DisplayTasks({ refreshTrigger }) {
             const data = await response.json();
             setTask(data);
         } catch(error) {
-            console.error('Error loading books: ', error);
+            console.error('Error loading tasks: ', error);
         }
     };
 
@@ -31,6 +31,14 @@ function DisplayTasks({ refreshTrigger }) {
 
     return (
         <>
+            <h1>Task Manager</h1>
+
+            <nav>
+                <a href="/">Home</a> |
+                <a href="/add.html">Add Task</a> |
+                <a href="/about.html">About</a>
+            </nav>
+
             <h2>List of current tasks</h2>
             {tasks.map(task => {
                 return (
