@@ -139,7 +139,7 @@ app.patch('/api/tasks/:id', async (req, res) => {
       const updatedTask = await Task.findOneAndUpdate(
         { id },
         updates,
-        { new: true, runValidators: true }
+        { returnDocument: 'after', runValidators: true }
       );
 
       if (!updatedTask) {

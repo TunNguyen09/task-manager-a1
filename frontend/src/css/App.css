@@ -112,6 +112,7 @@ a:hover {
 .input {
   flex: 1;
   min-width: 220px;
+  margin: 0 10px 10px 0;
   padding: 10px 12px;
   border-radius: 12px;
   border: 1px solid var(--border);

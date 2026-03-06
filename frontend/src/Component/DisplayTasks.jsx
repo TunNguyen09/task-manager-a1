@@ -10,6 +10,7 @@ export default function DisplayTasks() {
 
   const [editingId, setEditingId] = useState(null);
   const [editText, setEditText] = useState("");
+  const [editTime, setEditTime] = useState("");
 
   const showToast = (type, msg) => {
     setToast({ type, msg });
@@ -96,11 +97,13 @@ export default function DisplayTasks() {
   const startEdit = (task) => {
     setEditingId(task.id);
     setEditText(task.text || "");
+    setEditTime(task.deadline || null);
   };
 
   const cancelEdit = () => {
     setEditingId(null);
     setEditText("");
+    setEditTime(null);
   };
 
   const saveEdit = async (taskId) => {
@@ -113,7 +116,7 @@ export default function DisplayTasks() {
       const response = await fetch(`/api/tasks/${taskId}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text: editText.trim() }),
+        body: JSON.stringify({ text: editText.trim(), deadline: editTime ? new Date(editTime) : null }),
       });
 
       if (!response.ok) {
@@ -190,6 +193,13 @@ export default function DisplayTasks() {
                       value={editText}
                       onChange={(e) => setEditText(e.target.value)}
                       placeholder="Update task text"
+                    />
+                    {/* Add edit time here */}
+                    <input
+                      className="input"
+                      type='date'
+                      value={editTime}
+                      onChange={(e) => setEditTime(e.target.value)}
                     />
                   </>
                 ) : (
