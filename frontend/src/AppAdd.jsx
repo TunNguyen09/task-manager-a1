@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import AddTask from './Component/AddTask';
-import './App.css'
+import './css/App.css'
 
 function AddApp() {
   const [refreshTrigger, setRefreshTrigger] = useState(false);

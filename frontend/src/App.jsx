@@ -2,7 +2,7 @@ import { BrowserRouter, Routes, Route, NavLink } from "react-router-dom";
 import DisplayTasks from "./Component/DisplayTasks";
 import AddTask from "./Component/AddTask";
 import AboutView from "./aboutView"; // if you already have it
-import "./App.css";
+import "./css/App.css";
 
 function Layout({ children }) {
   return (
