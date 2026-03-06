@@ -1,148 +1,154 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+:root {
+  --bg: #0b1220;
+  --panel: rgba(255, 255, 255, 0.06);
+  --panel2: rgba(255, 255, 255, 0.09);
+  --text: rgba(255, 255, 255, 0.92);
+  --muted: rgba(255, 255, 255, 0.65);
+  --border: rgba(255, 255, 255, 0.12);
+  --accent: #4f8cff;
+  --danger: #ff5a6a;
+  --success: #3ddc97;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  background: radial-gradient(1200px 600px at 20% 10%, rgba(79,140,255,0.25), transparent 60%),
+              radial-gradient(900px 500px at 80% 0%, rgba(61,220,151,0.18), transparent 55%),
+              var(--bg);
+  color: var(--text);
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+a { color: inherit; }
+
+.appShell { min-height: 100vh; display: flex; flex-direction: column; }
+.container { width: min(980px, 92%); margin: 22px auto 30px; }
+
+.appHeader {
+  width: min(980px, 92%);
+  margin: 20px auto 0;
+  padding: 16px 16px;
+  border: 1px solid var(--border);
+  background: linear-gradient(180deg, var(--panel2), var(--panel));
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+.brand { display: flex; align-items: center; gap: 12px; }
+.brandLogo {
+  width: 40px; height: 40px;
+  border-radius: 12px;
+  display: grid; place-items: center;
+  font-weight: 800;
+  background: rgba(79,140,255,0.2);
+  border: 1px solid rgba(79,140,255,0.35);
+}
+.brandTitle { margin: 0; font-size: 1.2rem; }
+.brandSub { margin: 0; color: var(--muted); font-size: 0.9rem; }
+
+.nav { display: flex; gap: 10px; flex-wrap: wrap; justify-content: flex-end; }
+.navLink {
+  text-decoration: none;
+  padding: 8px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: rgba(255,255,255,0.04);
+  color: var(--muted);
+  font-weight: 600;
+}
+.navLink.active {
+  color: var(--text);
+  border-color: rgba(79,140,255,0.45);
+  background: rgba(79,140,255,0.14);
 }
 
 .card {
-  padding: 2em;
+  border: 1px solid var(--border);
+  background: linear-gradient(180deg, var(--panel2), var(--panel));
+  border-radius: 16px;
+  padding: 18px;
 }
 
-.read-the-docs {
-  color: #888;
+.card h2 { margin-top: 0; }
+
+.row { display: flex; gap: 12px; flex-wrap: wrap; }
+.input {
+  flex: 1;
+  min-width: 220px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: rgba(0,0,0,0.25);
+  color: var(--text);
+  outline: none;
 }
+.input::placeholder { color: rgba(255,255,255,0.4); }
 
-
-/* Previous css */
-/* Apply to all */
-* {
-  box-sizing: border-box;
-}
-
-/* Headers */
-h1 {
-  text-align: center;
-  margin-top: 40px;
-  margin-bottom: 10px;
-  font-size: 2.2rem;
-}
-
-h2 {
-  margin-top: 40px;
-  border-bottom: 2px solid #e0e0e0;
-  padding-bottom: 10px;
-}
-
-/* Navigation bar */
-nav {
-  display: flex;
-  justify-content: center;
-  gap: 20px;
-  background-color: #ffffff;
-  padding: 12px 20px;
-  border-radius: 8px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.5);
-  margin-bottom: 30px;
-}
-
-nav a {
-  text-decoration: none;
-  font-size: 1rem;
-  font-weight: 500;
-  color: black;
-}
-
-nav a:hover {
-  text-decoration: underline;
-}
-
-body {
-  font-family: Arial, sans-serif;
-  margin: 30px;
-}
-
-p {
-  font-size: 1.2rem;
-  text-align: center;
-}
-
-/* Form container */
-form {
-  background-color: rgb(80, 80, 80);
-  padding: 25px 30px;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.5);
-  max-width: 500px;
-  margin: 40px auto;
-}
-
-form label {
-  font-size: 1.2rem;
-  padding-left: 10px;
-  display: block;
-}
-
-form input[type="text"] {
-  width: 100%;
-  margin-left: 10px;
-}
-
-form input[type="date"] {
-  width: 100%;
-  margin-left: 10px;
-}
-
-/* List container */
-ul {
-  font-size: 1.2rem;
-  padding-left: 20px;
-}
-
-li {
-  margin-bottom: 8px;
-}
-
-/* Buttons */
-button {
-  background-color: #0077cc;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  padding: 6px 8px;
+.btn {
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: rgba(255,255,255,0.06);
+  color: var(--text);
+  font-weight: 700;
   cursor: pointer;
-  font-size: 0.9rem;
-  margin-left: 10px;
+}
+.btn:hover { background: rgba(255,255,255,0.10); }
+.btnPrimary {
+  border-color: rgba(79,140,255,0.5);
+  background: rgba(79,140,255,0.18);
+}
+.btnDanger {
+  border-color: rgba(255,90,106,0.55);
+  background: rgba(255,90,106,0.14);
 }
 
-button:hover {
-  background-color: #005fa3;
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.toast {
+  margin-top: 12px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: rgba(255,255,255,0.05);
+  color: var(--muted);
+}
+.toast.success { border-color: rgba(61,220,151,0.45); color: var(--success); }
+.toast.error { border-color: rgba(255,90,106,0.45); color: var(--danger); }
+
+.taskList { list-style: none; padding: 0; margin: 14px 0 0; display: grid; gap: 10px; }
+.taskItem {
+  border: 1px solid var(--border);
+  background: rgba(0,0,0,0.18);
+  border-radius: 14px;
+  padding: 12px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px;
+}
+.taskTitle { font-weight: 800; margin: 0; }
+.taskMeta { margin-top: 6px; display: flex; gap: 8px; flex-wrap: wrap; }
+
+.footer {
+  margin-top: auto;
+  width: min(980px, 92%);
+  margin-left: auto;
+  margin-right: auto;
+  padding: 16px 0 26px;
+  color: rgba(255,255,255,0.5);
+  font-size: 0.9rem;
+  text-align: center;
 }
