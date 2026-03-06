@@ -44,10 +44,10 @@ function DisplayTasks({ refreshTrigger }) {
             {tasks.map(task => {
                 return (
                     <div key={task.id}>
-                        <li>
+                        <li style={{textAlign: 'left'}}>
                         {task.text}
                         <span style={{color: 'red'}}> Due: </span>
-                        <CheckTime time={task.time}/>
+                        <CheckTime time={task.deadline}/>
                         </li>
                     </div>
                 );

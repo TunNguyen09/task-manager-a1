@@ -30,7 +30,7 @@ db.on('open', function() {
 // JSON data 
 let tasks = [
   { id: 1, text: "Example task", deadline: Date.now() },
-  { id: 2, text: "Example task 2", deadline: Date.now() },
+  { id: 2, text: "Example task 2", deadline: null },
 ];
 
 async function addExampleTasks(){
@@ -57,10 +57,38 @@ app.get("/", (req, res) => {
 
 // REST API
 // Display list of tasks
-app.get("/api/tasks", (req, res) => {
-  res.json(tasks);
-  console.log(tasks);
+// app.get("/api/tasks", (req, res) => {
+//   res.json(tasks);
+//   console.log(tasks);
+// });
+
+/****************MONGODB CRUD******************/
+
+//mongo read
+app.get('/api/tasks', async(req, res) => {
+    const tasks = await Task.find({});
+    res.status(200).json(tasks);
 });
+
+//mongodb create
+app.post('/api/tasks', express.json(), async(req, res) => {
+    const newTask = req.body;
+    if (newTask && newTask.text) {
+
+        const newTask2 = new Task({
+            id: Date.now(),
+            text: newTask.text,
+            deadline: newTask.deadline ? new Date(newTask.deadline).toISOString(): null
+        });
+        const savedTask = await newTask2.save();
+        res.status(201).json(savedTask);
+    } else {
+        console.log('error ', newTask);
+        res.status(400).json({ error: "Invalid task data" });
+    }
+});
+
+/**********************************************/
 
 // // Adding new task
 // app.post("/api/tasks", (req, res) => {

@@ -8,7 +8,7 @@ export default function CheckTime({ time }) {
   today.setHours(0, 0, 0, 0);
 
   const msPerDay = 1000 * 60 * 60 * 24;
-  const daysLeft = Math.ceil((dbdate - today) / msPerDay);
+  const daysLeft = Math.ceil((dbdate - today) / msPerDay) + 1;
 
   if (Number.isNaN(dbdate.getTime())) return "Invalid date";
   if (daysLeft < 0) return "Date has already passed";
