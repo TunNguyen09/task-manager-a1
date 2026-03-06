@@ -10,6 +10,7 @@ const DB_HOST = 'localhost';
 const DB_PORT = 27017;
 
 app.use(cors());
+app.use(express.json());
 
 //db connect
 const dbURL = `mongodb://${DB_HOST}:${DB_PORT}/task_manager`;
@@ -24,7 +25,6 @@ db.on('open', function() {
 })
 
 // Middleware
-// app.use(express.json());
 // app.use(express.urlencoded())
 
 // JSON data 
@@ -66,73 +66,112 @@ app.get("/", (req, res) => {
 
 //mongo read
 app.get('/api/tasks', async(req, res) => {
-    const tasks = await Task.find({});
-    res.status(200).json(tasks);
+    try {
+      const tasks = await Task.find({});
+      res.status(200).json(tasks);
+    } catch (error) {
+      res.status(500).json({ error: 'Failed to fetch tasks' });
+    }
+});
+
+//mongo read one
+app.get('/api/tasks/:id', async (req, res) => {
+    const id = Number(req.params.id);
+
+    if (Number.isNaN(id)) {
+      return res.status(400).json({ error: 'Invalid task id' });
+    }
+
+    try {
+      const task = await Task.findOne({ id });
+
+      if (!task) {
+        return res.status(404).json({ error: 'Task not found' });
+      }
+
+      res.status(200).json(task);
+    } catch (error) {
+      res.status(500).json({ error: 'Failed to fetch task' });
+    }
 });
 
 //mongodb create
-app.post('/api/tasks', express.json(), async(req, res) => {
+app.post('/api/tasks', async(req, res) => {
     const newTask = req.body;
     if (newTask && newTask.text) {
-
-        const newTask2 = new Task({
-            id: Date.now(),
-            text: newTask.text,
-            deadline: newTask.deadline ? new Date(newTask.deadline).toISOString(): null
-        });
-        const savedTask = await newTask2.save();
-        res.status(201).json(savedTask);
+        try {
+          const newTask2 = new Task({
+              id: Date.now(),
+              text: newTask.text,
+              deadline: newTask.deadline ? new Date(newTask.deadline).toISOString(): null
+          });
+          const savedTask = await newTask2.save();
+          res.status(201).json(savedTask);
+        } catch (error) {
+          res.status(500).json({ error: 'Failed to create task' });
+        }
     } else {
         console.log('error ', newTask);
         res.status(400).json({ error: "Invalid task data" });
     }
 });
 
-/**********************************************/
+//mongodb update
+app.patch('/api/tasks/:id', async (req, res) => {
+    const id = Number(req.params.id);
+    const { text, deadline } = req.body;
 
-// // Adding new task
-// app.post("/api/tasks", (req, res) => {
-//   const { text, time } = req.body;
-//   if (!text) {
-//     return res.status(400).json({ error: "Task text required" });
-//   }
+    if (Number.isNaN(id)) {
+      return res.status(400).json({ error: 'Invalid task id' });
+    }
 
-//   const newTask = {
-//     id: Date.now(),
-//     text,
-//     time: time ? new Date(time).toISOString(): null
-//   };
-  
-//   console.log(newTask);
-  
-//   tasks.push(newTask);
-//   res.status(201).json(newTask);
-// });
+    if (text === undefined && deadline === undefined) {
+      return res.status(400).json({ error: 'No update fields provided' });
+    }
 
-// // Deleting task
-// app.delete("/api/tasks/:id", (req, res) => {
-//   const id = Number(req.params.id);
-//   const index = tasks.findIndex(t => t.id === id);
+    const updates = {};
+    if (text !== undefined) updates.text = text;
+    if (deadline !== undefined) {
+      updates.deadline = deadline ? new Date(deadline).toISOString() : null;
+    }
 
-//   if (index === -1) {
-//     return res.status(404).json({ error: "Task not found" });
-//   }
+    try {
+      const updatedTask = await Task.findOneAndUpdate(
+        { id },
+        updates,
+        { new: true, runValidators: true }
+      );
 
-//   tasks.splice(index, 1);
-//   res.status(200).json({ message: "Task deleted" });
-// });
+      if (!updatedTask) {
+        return res.status(404).json({ error: 'Task not found' });
+      }
 
-// // Updating task
-// app.patch("/api/tasks/:id", (req, res) => {
-//   console.log("PATCH request received");
+      res.status(200).json(updatedTask);
+    } catch (error) {
+      res.status(500).json({ error: 'Failed to update task' });
+    }
+});
 
-//   const id = Number(req.params.id);
-//   const index = tasks.findIndex(t => t.id === id);
-//   const task = req.body;
-//   tasks[index].text = task.text;
-//   res.status(200).json(tasks[index]);
-  
-// })
+//mongodb delete
+app.delete('/api/tasks/:id', async (req, res) => {
+    const id = Number(req.params.id);
+
+    if (Number.isNaN(id)) {
+      return res.status(400).json({ error: 'Invalid task id' });
+    }
+
+    try {
+      const deletedTask = await Task.findOneAndDelete({ id });
+
+      if (!deletedTask) {
+        return res.status(404).json({ error: 'Task not found' });
+      }
+
+      res.status(200).json({ message: 'Task deleted' });
+    } catch (error) {
+      res.status(500).json({ error: 'Failed to delete task' });
+    }
+});
 
 // 404 handler
 app.use((req, res) => {
