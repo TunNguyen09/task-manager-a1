@@ -1,184 +1,192 @@
-const express = require("express");
-const path = require("path");
-const cors = require("cors");
-const app = express();
-const { default: mongoose } = require('mongoose');
-const Task = require("./models/Task");
+require("dotenv").config();
 
-const PORT = 8080;
-const DB_HOST = 'localhost';
-const DB_PORT = 27017;
+const express = require("express");
+const cors = require("cors");
+const mongoose = require("mongoose");
+
+const Task = require("./models/Task");
+const User = require("./models/User");
+const authRoutes = require("./routes/auth");
+const authMiddleware = require("./middleware/authMiddleware");
+
+const app = express();
+const PORT = process.env.PORT || 8080;
+const MONGO_URI = process.env.MONGO_URI || "mongodb://localhost:27017/task_manager";
 
 app.use(cors());
 app.use(express.json());
 
-//db connect
-const dbURL = `mongodb://${DB_HOST}:${DB_PORT}/task_manager`;
-mongoose.connect(dbURL);
+mongoose.connect(MONGO_URI);
 
 const db = mongoose.connection;
-db.on('error', function(e) {
-  console.log('error connecting');
+db.on("error", () => {
+  console.log("Error connecting to database");
 });
-db.on('open', function() {
-  console.log('db connected');
-})
-
-// Middleware
-// app.use(express.urlencoded())
-
-// JSON data 
-let tasks = [
-  { id: 1, text: "Example task", deadline: Date.now() },
-  { id: 2, text: "Example task 2", deadline: null },
-];
-
-async function addExampleTasks(){
-  const taskCount = await Task.countDocuments();
-
-  if(taskCount === 0){
-    console.log('Adding example tasks...');
-    tasks.forEach(task => {
-      const newTask = new Task(task);
-      newTask.save()
-        .then(() => console.log('task added'))
-        .catch(err => console.error('error adding task: ',task.id));
-    });
-  }else{
-    console.log('Tasks exist');
-    return;
-  }
-};
-addExampleTasks();
+db.once("open", () => {
+  console.log("Database connected");
+});
 
 app.get("/", (req, res) => {
-  res.send("Backend is running. Try /api/tasks");
+  res.send("Backend is running. Try /api/tasks or /api/auth");
 });
 
-// REST API
-// Display list of tasks
-// app.get("/api/tasks", (req, res) => {
-//   res.json(tasks);
-//   console.log(tasks);
-// });
+// Auth routes
+app.use("/api/auth", authRoutes);
 
-/****************MONGODB CRUD******************/
-
-//mongo read
-app.get('/api/tasks', async(req, res) => {
-    try {
-      const tasks = await Task.find({});
-      res.status(200).json(tasks);
-    } catch (error) {
-      res.status(500).json({ error: 'Failed to fetch tasks' });
+/*
+  OPTIONAL SEED ROUTE FOR TESTING
+  Use this once if you want a demo user quickly.
+*/
+app.post("/api/setup/demo-user", async (req, res) => {
+  try {
+    const existing = await User.findOne({ email: "demo@example.com" });
+    if (existing) {
+      return res.status(200).json({ message: "Demo user already exists" });
     }
+
+    const bcrypt = require("bcryptjs");
+    const hashedPassword = await bcrypt.hash("password123", 10);
+
+    const user = new User({
+      username: "demo",
+      email: "demo@example.com",
+      password: hashedPassword,
+    });
+
+    await user.save();
+
+    res.status(201).json({ message: "Demo user created" });
+  } catch (error) {
+    res.status(500).json({ error: "Failed to create demo user" });
+  }
 });
 
-//mongo read one
-app.get('/api/tasks/:id', async (req, res) => {
-    const id = Number(req.params.id);
+/**************** TASK ROUTES - PROTECTED ****************/
 
-    if (Number.isNaN(id)) {
-      return res.status(400).json({ error: 'Invalid task id' });
-    }
-
-    try {
-      const task = await Task.findOne({ id });
-
-      if (!task) {
-        return res.status(404).json({ error: 'Task not found' });
-      }
-
-      res.status(200).json(task);
-    } catch (error) {
-      res.status(500).json({ error: 'Failed to fetch task' });
-    }
+// Get only logged-in user's tasks
+app.get("/api/tasks", authMiddleware, async (req, res) => {
+  try {
+    const tasks = await Task.find({ userId: req.user.userId }).sort({ createdAt: -1 });
+    res.status(200).json(tasks);
+  } catch (error) {
+    res.status(500).json({ error: "Failed to fetch tasks" });
+  }
 });
 
-//mongodb create
-app.post('/api/tasks', async(req, res) => {
-    const newTask = req.body;
-    if (newTask && newTask.text) {
-        try {
-          const newTask2 = new Task({
-              id: Date.now(),
-              text: newTask.text,
-              deadline: newTask.deadline ? new Date(newTask.deadline).toISOString(): null
-          });
-          const savedTask = await newTask2.save();
-          res.status(201).json(savedTask);
-        } catch (error) {
-          res.status(500).json({ error: 'Failed to create task' });
-        }
-    } else {
-        console.log('error ', newTask);
-        res.status(400).json({ error: "Invalid task data" });
+// Get one task only if it belongs to logged-in user
+app.get("/api/tasks/:id", authMiddleware, async (req, res) => {
+  const id = Number(req.params.id);
+
+  if (Number.isNaN(id)) {
+    return res.status(400).json({ error: "Invalid task id" });
+  }
+
+  try {
+    const task = await Task.findOne({ id, userId: req.user.userId });
+
+    if (!task) {
+      return res.status(404).json({ error: "Task not found" });
     }
+
+    res.status(200).json(task);
+  } catch (error) {
+    res.status(500).json({ error: "Failed to fetch task" });
+  }
 });
 
-//mongodb update
-app.patch('/api/tasks/:id', async (req, res) => {
-    const id = Number(req.params.id);
-    const { text, deadline } = req.body;
+// Create task for logged-in user
+app.post("/api/tasks", authMiddleware, async (req, res) => {
+  const { text, deadline, completed } = req.body;
 
-    if (Number.isNaN(id)) {
-      return res.status(400).json({ error: 'Invalid task id' });
-    }
+  if (!text || !text.trim()) {
+    return res.status(400).json({ error: "Task text is required" });
+  }
 
-    if (text === undefined && deadline === undefined) {
-      return res.status(400).json({ error: 'No update fields provided' });
-    }
+  try {
+    const newTask = new Task({
+      id: Date.now(),
+      text: text.trim(),
+      deadline: deadline ? new Date(deadline).toISOString() : null,
+      completed: completed ?? false,
+      userId: req.user.userId,
+    });
 
-    const updates = {};
-    if (text !== undefined) updates.text = text;
-    if (deadline !== undefined) {
-      updates.deadline = deadline ? new Date(deadline).toISOString() : null;
-    }
-
-    try {
-      const updatedTask = await Task.findOneAndUpdate(
-        { id },
-        updates,
-        { returnDocument: 'after', runValidators: true }
-      );
-
-      if (!updatedTask) {
-        return res.status(404).json({ error: 'Task not found' });
-      }
-
-      res.status(200).json(updatedTask);
-    } catch (error) {
-      res.status(500).json({ error: 'Failed to update task' });
-    }
+    const savedTask = await newTask.save();
+    res.status(201).json(savedTask);
+  } catch (error) {
+    res.status(500).json({ error: "Failed to create task" });
+  }
 });
 
-//mongodb delete
-app.delete('/api/tasks/:id', async (req, res) => {
-    const id = Number(req.params.id);
+// Update task only if it belongs to logged-in user
+app.patch("/api/tasks/:id", authMiddleware, async (req, res) => {
+  const id = Number(req.params.id);
+  const { text, deadline, completed } = req.body;
 
-    if (Number.isNaN(id)) {
-      return res.status(400).json({ error: 'Invalid task id' });
+  if (Number.isNaN(id)) {
+    return res.status(400).json({ error: "Invalid task id" });
+  }
+
+  if (text === undefined && deadline === undefined && completed === undefined) {
+    return res.status(400).json({ error: "No update fields provided" });
+  }
+
+  const updates = {};
+
+  if (text !== undefined) updates.text = text.trim();
+  if (deadline !== undefined) {
+    updates.deadline = deadline ? new Date(deadline).toISOString() : null;
+  }
+  if (completed !== undefined) {
+    updates.completed = completed;
+  }
+
+  try {
+    const updatedTask = await Task.findOneAndUpdate(
+      { id, userId: req.user.userId },
+      updates,
+      { new: true, runValidators: true }
+    );
+
+    if (!updatedTask) {
+      return res.status(404).json({ error: "Task not found" });
     }
 
-    try {
-      const deletedTask = await Task.findOneAndDelete({ id });
-
-      if (!deletedTask) {
-        return res.status(404).json({ error: 'Task not found' });
-      }
-
-      res.status(200).json({ message: 'Task deleted' });
-    } catch (error) {
-      res.status(500).json({ error: 'Failed to delete task' });
-    }
+    res.status(200).json(updatedTask);
+  } catch (error) {
+    res.status(500).json({ error: "Failed to update task" });
+  }
 });
 
-// 404 handler
+// Delete task only if it belongs to logged-in user
+app.delete("/api/tasks/:id", authMiddleware, async (req, res) => {
+  const id = Number(req.params.id);
+
+  if (Number.isNaN(id)) {
+    return res.status(400).json({ error: "Invalid task id" });
+  }
+
+  try {
+    const deletedTask = await Task.findOneAndDelete({
+      id,
+      userId: req.user.userId,
+    });
+
+    if (!deletedTask) {
+      return res.status(404).json({ error: "Task not found" });
+    }
+
+    res.status(200).json({ message: "Task deleted" });
+  } catch (error) {
+    res.status(500).json({ error: "Failed to delete task" });
+  }
+});
+
+// 404
 app.use((req, res) => {
   res.status(404).send("Page not found");
 });
 
-// Start server
 app.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}`);
 });
