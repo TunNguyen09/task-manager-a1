@@ -1,10 +1,18 @@
 import { BrowserRouter, Routes, Route, NavLink } from "react-router-dom";
 import DisplayTasks from "./Component/DisplayTasks";
 import AddTask from "./Component/AddTask";
-import AboutView from "./aboutView"; // if you already have it
+import AboutView from "./aboutView";
 import "./css/App.css";
+import Register from "./pages/Register";
+import Login from "./pages/Login";
+import { clearAuthData, isLoggedIn } from "./utils/auth";
 
 function Layout({ children }) {
+  function handleLogout() {
+    clearAuthData();
+    window.location.href = "/login";
+  }
+
   return (
     <div className="appShell">
       <header className="appHeader">
@@ -20,12 +28,29 @@ function Layout({ children }) {
           <NavLink to="/" end className={({ isActive }) => `navLink ${isActive ? "active" : ""}`}>
             Home
           </NavLink>
+
           <NavLink to="/add" className={({ isActive }) => `navLink ${isActive ? "active" : ""}`}>
             Add Task
           </NavLink>
+
           <NavLink to="/about" className={({ isActive }) => `navLink ${isActive ? "active" : ""}`}>
             About
           </NavLink>
+
+          {!isLoggedIn() ? (
+            <>
+              <NavLink to="/register" className={({ isActive }) => `navLink ${isActive ? "active" : ""}`}>
+                Register
+              </NavLink>
+              <NavLink to="/login" className={({ isActive }) => `navLink ${isActive ? "active" : ""}`}>
+                Login
+              </NavLink>
+            </>
+          ) : (
+            <button className="btn" onClick={handleLogout} type="button">
+              Logout
+            </button>
+          )}
         </nav>
       </header>
 
@@ -43,6 +68,8 @@ export default function App() {
         <Routes>
           <Route path="/" element={<DisplayTasks />} />
           <Route path="/add" element={<AddTask />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/login" element={<Login />} />
           <Route
             path="/about"
             element={
