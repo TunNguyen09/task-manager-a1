@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { getAuthHeaders } from "../utils/auth";
 
 export default function AddTask() {
   const [formData, setFormData] = useState({ text: "", deadline: "" });
@@ -28,9 +29,10 @@ export default function AddTask() {
     };
 
     try {
+
       const response = await fetch("/api/tasks", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: getAuthHeaders(true),
         body: JSON.stringify(newTask),
       });
 

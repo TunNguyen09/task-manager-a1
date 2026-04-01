@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import CheckTime from "./CheckTime";
+import { getAuthHeaders } from "../utils/auth";
 
 export default function DisplayTasks() {
   const [tasks, setTasks] = useState([]);
@@ -21,8 +22,18 @@ export default function DisplayTasks() {
   const loadTasks = async () => {
     try {
       setLoading(true);
-      const response = await fetch("/api/tasks");
+      const response = await fetch("/api/tasks", {
+        headers: getAuthHeaders(),
+      });
+
       const data = await response.json();
+
+      if (!response.ok) {
+        showToast("error", data.error || "Could not load tasks.");
+        setTasks([]);
+        return;
+      }
+
       setTasks(Array.isArray(data) ? data : []);
     } catch (err) {
       console.error(err);
@@ -50,13 +61,13 @@ export default function DisplayTasks() {
 
     const newTask = {
       text: formData.text.trim(),
-      deadline: formData.deadline ? new Date(formData.deadline) : null,
+      deadline: formData.deadline || null,
     };
 
     try {
       const response = await fetch("/api/tasks", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: getAuthHeaders(true),
         body: JSON.stringify(newTask),
       });
 
@@ -80,12 +91,17 @@ export default function DisplayTasks() {
     if (!ok) return;
 
     try {
-      const response = await fetch(`/api/tasks/${id}`, { method: "DELETE" });
+      const response = await fetch(`/api/tasks/${id}`, {
+        method: "DELETE",
+        headers: getAuthHeaders(),
+      });
+
       if (!response.ok) {
         const result = await response.json().catch(() => ({}));
         showToast("error", result.error || "Could not delete task.");
         return;
       }
+
       showToast("success", "Task deleted.");
       await loadTasks();
     } catch (err) {
@@ -97,13 +113,13 @@ export default function DisplayTasks() {
   const startEdit = (task) => {
     setEditingId(task.id);
     setEditText(task.text || "");
-    setEditTime(task.deadline || null);
+    setEditTime(task.deadline ? String(task.deadline).slice(0, 10) : "");
   };
 
   const cancelEdit = () => {
     setEditingId(null);
     setEditText("");
-    setEditTime(null);
+    setEditTime("");
   };
 
   const saveEdit = async (taskId) => {
@@ -115,8 +131,11 @@ export default function DisplayTasks() {
     try {
       const response = await fetch(`/api/tasks/${taskId}`, {
         method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text: editText.trim(), deadline: editTime ? new Date(editTime) : null }),
+        headers: getAuthHeaders(true),
+        body: JSON.stringify({
+          text: editText.trim(),
+          deadline: editTime || null,
+        }),
       });
 
       if (!response.ok) {
@@ -194,10 +213,9 @@ export default function DisplayTasks() {
                       onChange={(e) => setEditText(e.target.value)}
                       placeholder="Update task text"
                     />
-                    {/* Add edit time here */}
                     <input
                       className="input"
-                      type='date'
+                      type="date"
                       value={editTime}
                       onChange={(e) => setEditTime(e.target.value)}
                     />
