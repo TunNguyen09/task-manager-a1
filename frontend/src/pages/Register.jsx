@@ -28,9 +28,14 @@ export default function Register() {
     setError("");
     setSuccess("");
 
-    if (!formData.username || !formData.email || !formData.password) {
+    if (!formData.username || !formData.email || !formData.password || !formData.password2) {
       setError("Please fill in all fields.");
       return;
+    }
+
+    if (formData.password != formData.password2) {
+      setError("Password does not match.");
+      return
     }
 
     setLoading(true);
@@ -59,6 +64,7 @@ export default function Register() {
 
       setTimeout(() => {
         navigate("/");
+        window.location.reload();
       }, 1000);
     } catch (err) {
       setError("Server error. Please try again.");
@@ -95,6 +101,14 @@ export default function Register() {
             name="password"
             placeholder="Password"
             value={formData.password}
+            onChange={handleChange}
+          />
+
+          <input
+            type="password"
+            name="password2"
+            placeholder="Type your password again"
+            value={formData.password2}
             onChange={handleChange}
           />
 

@@ -57,6 +57,7 @@ export default function Login() {
 
       setTimeout(() => {
         navigate("/");
+        window.location.reload();
       }, 1000);
     } catch (err) {
       setError("Server error. Please try again.");
