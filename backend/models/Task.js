@@ -17,6 +17,11 @@ const TaskSchema = new mongoose.Schema(
       required: false,
       default: null,
     },
+    category: {
+      type: String,
+      required: false,
+      default: "",
+    },
     completed: {
       type: Boolean,
       default: false,

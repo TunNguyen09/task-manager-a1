@@ -2,7 +2,7 @@ import { useState } from "react";
 import { getAuthHeaders } from "../utils/auth";
 
 export default function AddTask() {
-  const [formData, setFormData] = useState({ text: "", deadline: "" });
+  const [formData, setFormData] = useState({ text: "", deadline: "", category:"", customCategory: "", });
   const [toast, setToast] = useState({ type: "", msg: "" });
 
   const showToast = (type, msg) => {
@@ -23,13 +23,18 @@ export default function AddTask() {
       return;
     }
 
+    const finalCategory =
+      formData.category === "other"
+        ? formData.customCategory
+        : formData.category;
+
     const newTask = {
       text: formData.text.trim(),
-      deadline: formData.deadline ? new Date(formData.deadline) : null,
+      deadline: formData.deadline || null,
+      category: finalCategory || "",
     };
 
     try {
-
       const response = await fetch("/api/tasks", {
         method: "POST",
         headers: getAuthHeaders(true),
@@ -42,7 +47,7 @@ export default function AddTask() {
         return;
       }
 
-      setFormData({ text: "", deadline: "" });
+      setFormData({ text: "", deadline: "", category: "", customCategory: "", });
       showToast("success", "Task added!");
     } catch (err) {
       console.error(err);
@@ -67,9 +72,7 @@ export default function AddTask() {
             value={formData.text}
             onChange={handleChange}
           />
-        </div>
 
-        <div className="row" style={{ marginTop: 12 }}>
           <input
             className="input"
             type="date"
@@ -77,9 +80,34 @@ export default function AddTask() {
             value={formData.deadline}
             onChange={handleChange}
           />
-          <button className="btn btnPrimary" type="submit">
-            Create Task
-          </button>
+
+          <select
+              className="input"
+              name="category"
+              value={formData.category}
+              onChange={handleChange}
+            >
+              <option value="">Select category</option>
+              <option value="work">Work</option>
+              <option value="school">School</option>
+              <option value="other">Other…</option>
+            </select>
+
+            {formData.category === "other" && (
+              <input
+                className="input"
+                type="text"
+                placeholder="Custom category"
+                value={formData.customCategory}
+                onChange={(e) =>
+                  setFormData((p) => ({ ...p, customCategory: e.target.value }))
+                }
+              />
+            )}
+
+            <button className="btn btnPrimary" type="submit">
+              Create Task
+            </button>
         </div>
 
         {toast.msg ? <div className={`toast ${toast.type}`}>{toast.msg}</div> : null}

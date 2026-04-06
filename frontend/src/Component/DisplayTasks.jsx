@@ -5,7 +5,7 @@ import io from 'socket.io-client';
 
 export default function DisplayTasks() {
   const [tasks, setTasks] = useState([]);
-  const [formData, setFormData] = useState({ text: "", deadline: "" });
+  const [formData, setFormData] = useState({ text: "", deadline: "", category: "", customCategory: "", });
 
   const [loading, setLoading] = useState(true);
   const [toast, setToast] = useState({ type: "", msg: "" });
@@ -13,6 +13,8 @@ export default function DisplayTasks() {
   const [editingId, setEditingId] = useState(null);
   const [editText, setEditText] = useState("");
   const [editTime, setEditTime] = useState("");
+  const [editCategory, setEditCategory] = useState("");
+  const [editCustomCategory, setEditCustomCategory] = useState("");
 
   const showToast = (type, msg) => {
     setToast({ type, msg });
@@ -63,6 +65,7 @@ export default function DisplayTasks() {
     const newTask = {
       text: formData.text.trim(),
       deadline: formData.deadline || null,
+      category: formData.category === "other" ? formData.customCategory : formData.category,
     };
 
     try {
@@ -78,7 +81,7 @@ export default function DisplayTasks() {
         return;
       }
 
-      setFormData({ text: "", deadline: "" });
+      setFormData({ text: "", deadline: "", category: "", customCategory: "", });
       showToast("success", "Task added!");
       await loadTasks();
     } catch (err) {
@@ -115,12 +118,23 @@ export default function DisplayTasks() {
     setEditingId(task.id);
     setEditText(task.text || "");
     setEditTime(task.deadline ? String(task.deadline).slice(0, 10) : "");
+    // If category is one of the predefined ones:
+    if (task.category === "work" || task.category === "school" || task.category === "") {
+      setEditCategory(task.category);
+      setEditCustomCategory("");
+    } else {
+      // Otherwise it's a custom category
+      setEditCategory("other");
+      setEditCustomCategory(task.category);
+    }
   };
 
   const cancelEdit = () => {
     setEditingId(null);
     setEditText("");
     setEditTime("");
+    setEditCategory("");
+    setEditCustomCategory("");
   };
 
   const saveEdit = async (taskId) => {
@@ -129,6 +143,8 @@ export default function DisplayTasks() {
       return;
     }
 
+    const updatedCategory = editCategory === "other" ? editCustomCategory : editCategory;
+
     try {
       const response = await fetch(`/api/tasks/${taskId}`, {
         method: "PATCH",
@@ -136,6 +152,7 @@ export default function DisplayTasks() {
         body: JSON.stringify({
           text: editText.trim(),
           deadline: editTime || null,
+          category: updatedCategory,
         }),
       });
 
@@ -156,7 +173,7 @@ export default function DisplayTasks() {
 
   return (
     <div className="card">
-      <h2>Home</h2>
+      <h2>Your Tasks!</h2>
       <p style={{ color: "rgba(255,255,255,0.65)", marginTop: 0 }}>
         Add tasks and manage them with full CRUD (Create, Read, Update, Delete).
       </p>
@@ -171,6 +188,7 @@ export default function DisplayTasks() {
             value={formData.text}
             onChange={handleChange}
           />
+
           <input
             className="input"
             type="date"
@@ -178,6 +196,31 @@ export default function DisplayTasks() {
             value={formData.deadline}
             onChange={handleChange}
           />
+
+          <select
+            className="input"
+            name="category"
+            value={formData.category}
+            onChange={handleChange}
+          >
+            <option value="">Select category</option>
+            <option value="work">Work</option>
+            <option value="school">School</option>
+            <option value="other">Other…</option>
+          </select>
+
+          {formData.category === "other" && (
+            <input
+              className="input"
+              type="text"
+              placeholder="Custom category"
+              value={formData.customCategory}
+              onChange={(e) =>
+                setFormData((p) => ({ ...p, customCategory: e.target.value }))
+              }
+            />
+          )}
+
           <button className="btn btnPrimary" type="submit">
             Add
           </button>
@@ -208,22 +251,51 @@ export default function DisplayTasks() {
                     <p className="taskTitle" style={{ marginBottom: 8 }}>
                       Editing
                     </p>
+
                     <input
                       className="input"
                       value={editText}
                       onChange={(e) => setEditText(e.target.value)}
                       placeholder="Update task text"
                     />
+
                     <input
                       className="input"
                       type="date"
                       value={editTime}
                       onChange={(e) => setEditTime(e.target.value)}
                     />
+
+                    <select
+                      className="input"
+                      value={editCategory}
+                      onChange={(e) => setEditCategory(e.target.value)}
+                    >
+                      <option value="">Select category</option>
+                      <option value="work">Work</option>
+                      <option value="school">School</option>
+                      <option value="other">Other…</option>
+                    </select>
+
+                    {editCategory === "other" && (
+                      <input
+                        className="input"
+                        type="text"
+                        placeholder="Custom category"
+                        value={editCustomCategory}
+                        onChange={(e) => setEditCustomCategory(e.target.value)}
+                      />
+                    )}
                   </>
                 ) : (
                   <p className="taskTitle">{task.text}</p>
                 )}
+
+                <div className="taskMeta">
+                  <span className="badge">
+                    Category: {task.category || "None"}
+                  </span>
+                </div>
 
                 <div className="taskMeta">
                   <span className="badge">
