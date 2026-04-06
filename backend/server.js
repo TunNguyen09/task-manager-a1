@@ -27,11 +27,6 @@ const io = new Server(server, {
 io.on('connection', (socket) => {
   console.log(`User Connected: ${socket.id}`);
 
-  socket.on('send_message', (data) => {
-    // Broadcast to everyone
-    io.emit('receive_message', data);
-  });
-
   socket.on('set_mode', (data) => {
     // Broadcast to everyone
     io.emit('set_mode_cl', data);
