@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route, NavLink } from "react-router-dom";
 import DisplayTasks from "./Component/DisplayTasks";
 import AddTask from "./Component/AddTask";
 import AboutView from "./aboutView";
+import SearchTask from "./Component/SearchTask";
 import "./css/App.css";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
@@ -31,6 +32,10 @@ function Layout({ children }) {
 
           <NavLink to="/add" className={({ isActive }) => `navLink ${isActive ? "active" : ""}`}>
             Add Task
+          </NavLink>
+
+          <NavLink to="/search" className={({ isActive }) => `navLink ${isActive ? "active" : ""}`}>
+            Search
           </NavLink>
 
           <NavLink to="/about" className={({ isActive }) => `navLink ${isActive ? "active" : ""}`}>
@@ -68,6 +73,7 @@ export default function App() {
         <Routes>
           <Route path="/" element={<DisplayTasks />} />
           <Route path="/add" element={<AddTask />} />
+          <Route path="/search" element={<SearchTask />} />
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
           <Route

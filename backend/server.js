@@ -96,7 +96,7 @@ app.get("/api/tasks/:id", authMiddleware, async (req, res) => {
 
 // Create task for logged-in user
 app.post("/api/tasks", authMiddleware, async (req, res) => {
-  const { text, deadline, completed } = req.body;
+  const { text, deadline, completed, category } = req.body;
 
   if (!text || !text.trim()) {
     return res.status(400).json({ error: "Task text is required" });
@@ -108,6 +108,7 @@ app.post("/api/tasks", authMiddleware, async (req, res) => {
       text: text.trim(),
       deadline: deadline ? new Date(deadline).toISOString() : null,
       completed: completed ?? false,
+      category: category || "",
       userId: req.user.userId,
     });
 
@@ -121,7 +122,7 @@ app.post("/api/tasks", authMiddleware, async (req, res) => {
 // Update task only if it belongs to logged-in user
 app.patch("/api/tasks/:id", authMiddleware, async (req, res) => {
   const id = Number(req.params.id);
-  const { text, deadline, completed } = req.body;
+  const { text, deadline, completed, category } = req.body;
 
   if (Number.isNaN(id)) {
     return res.status(400).json({ error: "Invalid task id" });
@@ -140,6 +141,7 @@ app.patch("/api/tasks/:id", authMiddleware, async (req, res) => {
   if (completed !== undefined) {
     updates.completed = completed;
   }
+  if (category !== undefined) updates.category = category;
 
   try {
     const updatedTask = await Task.findOneAndUpdate(
@@ -179,6 +181,32 @@ app.delete("/api/tasks/:id", authMiddleware, async (req, res) => {
     res.status(200).json({ message: "Task deleted" });
   } catch (error) {
     res.status(500).json({ error: "Failed to delete task" });
+  }
+});
+
+// Search tasks if it belongs to logged-in user
+app.get("/api/tasks/search", authMiddleware, async (req, res) => {
+  const { text, category } = req.query;
+
+  const query = {
+    userId: req.user.userId
+  };
+
+  // Search by task title
+  if (text) {
+    query.text = { $regex: text, $options: "i" }; // case-insensitive
+  }
+
+  // Search by category
+  if (category) {
+    query.category = { $regex: category, $options: "i" };
+  }
+
+  try {
+    const tasks = await Task.find(query);
+    res.json(tasks);
+  } catch (err) {
+    res.status(500).json({ error: "Search failed" });
   }
 });
 
