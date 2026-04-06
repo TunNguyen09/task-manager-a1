@@ -13,6 +13,36 @@ const app = express();
 const PORT = process.env.PORT || 8080;
 const MONGO_URI = process.env.MONGO_URI || "mongodb://localhost:27017/task_manager";
 
+const http = require('http');
+const { Server } = require('socket.io');
+const server = http.createServer(app);
+
+//socket io
+const io = new Server(server, {
+  cors: {
+    origin: "http://localhost:5173", 
+    methods: ["GET", "POST"]
+  }
+});
+io.on('connection', (socket) => {
+  console.log(`User Connected: ${socket.id}`);
+
+  socket.on('send_message', (data) => {
+    // Broadcast to everyone
+    io.emit('receive_message', data);
+  });
+
+  socket.on('set_mode', (data) => {
+    // Broadcast to everyone
+    io.emit('set_mode_cl', data);
+  });
+
+  socket.on('disconnect', () => {
+    console.log('User Disconnected', socket.id);
+  });
+});
+
+
 app.use(cors());
 app.use(express.json());
 
@@ -187,6 +217,11 @@ app.use((req, res) => {
   res.status(404).send("Page not found");
 });
 
-app.listen(PORT, () => {
+//io
+server.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}`);
 });
+
+// app.listen(PORT, () => {
+//   console.log(`Server running at http://localhost:${PORT}`);
+// });

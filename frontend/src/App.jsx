@@ -6,6 +6,7 @@ import "./css/App.css";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
 import { clearAuthData, isLoggedIn } from "./utils/auth";
+import { Socket } from "./Component/DisplayTasks";
 
 function Layout({ children }) {
   function handleLogout() {
@@ -66,7 +67,7 @@ export default function App() {
     <BrowserRouter>
       <Layout>
         <Routes>
-          <Route path="/" element={<DisplayTasks />} />
+          <Route path="/" element={<><DisplayTasks /> <Socket /> </>} />
           <Route path="/add" element={<AddTask />} />
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
