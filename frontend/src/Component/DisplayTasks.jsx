@@ -332,29 +332,3 @@ export default function DisplayTasks() {
     </div>
   );
 }
-
-const socket = io.connect("http://localhost:8080");
-function Socket() {
-  useEffect(() => {
-    socket.on("set_mode_cl", (color) => {
-      document.documentElement.style.setProperty('--bg', color);
-    });
-
-    // Cleanup listeners to prevent memory leaks
-    return () => {
-      socket.off("set_mode_cl");
-    }
-  }, []);
-
-  const setMode = (color) => {
-    socket.emit("set_mode", color);
-  };
-
-  return (
-    <div>
-      <button onClick={() => setMode("#0b1220")}>Dark Mode</button>
-      <button onClick={() => setMode("#3a5181")}>Light Mode</button>
-    </div>
-  );
-}
-export {Socket as Socket};
