@@ -88,9 +88,10 @@ export default function AddTask() {
               onChange={handleChange}
             >
               <option value="">Select category</option>
-              <option value="work">Work</option>
-              <option value="school">School</option>
-              <option value="other">Other…</option>
+              <option value="Work">Work</option>
+              <option value="School">School</option>
+              <option value="Personal">Personal</option>
+              <option value="Other">Other...</option>
             </select>
 
             {formData.category === "other" && (

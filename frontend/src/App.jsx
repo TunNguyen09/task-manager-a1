@@ -2,7 +2,7 @@ import { BrowserRouter, Routes, Route, NavLink } from "react-router-dom";
 import DisplayTasks from "./Component/DisplayTasks";
 import AddTask from "./Component/AddTask";
 import AboutView from "./aboutView";
-import SearchTask from "./Component/SearchTask";
+import SearchView from "./searchView";
 import "./css/App.css";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
@@ -74,7 +74,7 @@ export default function App() {
         <Routes>
           <Route path="/" element={<><DisplayTasks /> <Socket /> </>} />
           <Route path="/add" element={<AddTask />} />
-          <Route path="/search" element={<SearchTask />} />
+          <Route path="/search" element={<SearchView />} />
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
           <Route

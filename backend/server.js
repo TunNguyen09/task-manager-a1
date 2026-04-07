@@ -215,7 +215,7 @@ app.delete("/api/tasks/:id", authMiddleware, async (req, res) => {
 });
 
 // Search tasks if it belongs to logged-in user
-app.get("/api/tasks/search", authMiddleware, async (req, res) => {
+app.get("/api/search", authMiddleware, async (req, res) => {
   const { text, category } = req.query;
 
   const query = {

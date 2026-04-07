@@ -272,12 +272,13 @@ export default function DisplayTasks() {
                       onChange={(e) => setEditCategory(e.target.value)}
                     >
                       <option value="">Select category</option>
-                      <option value="work">Work</option>
-                      <option value="school">School</option>
-                      <option value="other">Other…</option>
+                      <option value="Work">Work</option>
+                      <option value="School">School</option>
+                      <option value="Personal">Personal</option>
+                      <option value="Other">Other...</option>
                     </select>
 
-                    {editCategory === "other" && (
+                    {editCategory === "Other" && (
                       <input
                         className="input"
                         type="text"
@@ -351,9 +352,9 @@ function Socket() {
   };
 
   return (
-    <div>
-      <button onClick={() => setMode("#0b1220")}>Dark Mode</button>
-      <button onClick={() => setMode("#3a5181")}>Light Mode</button>
+    <div style={{ marginTop: '20px', display: 'flex', gap: '10px' }}>
+      <button className="btn" onClick={() => setMode("#0b1220")}>Dark Mode</button>
+      <button className="btn" onClick={() => setMode("#3a506b")}>Blue Mode</button>
     </div>
   );
 }
