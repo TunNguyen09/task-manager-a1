@@ -7,6 +7,9 @@
         - Add tasks
         - Edit tasks and deadline
         - Delete tasks, with error prevention
+        - Search tasks
+        - Log in/Register with authentication
+        - Real-time communication through theme change (dark/light mode)
     - How to run:
         - Start server in the back end folder with npm run start
         - Go to http://localhost:8080

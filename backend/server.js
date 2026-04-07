@@ -172,7 +172,7 @@ app.patch("/api/tasks/:id", authMiddleware, async (req, res) => {
     const updatedTask = await Task.findOneAndUpdate(
       { id, userId: req.user.userId },
       updates,
-      { new: true, runValidators: true }
+      { after: true, runValidators: true } //mongoose warning, new update here, change 'new' to 'after'
     );
 
     if (!updatedTask) {
