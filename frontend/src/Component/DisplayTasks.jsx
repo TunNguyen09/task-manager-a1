@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import CheckTime from "./CheckTime";
 import { getAuthHeaders } from "../utils/auth";
-import io from 'socket.io-client';
 
 export default function DisplayTasks() {
   const [tasks, setTasks] = useState([]);
@@ -352,9 +351,9 @@ function Socket() {
   };
 
   return (
-    <div style={{ marginTop: '20px', display: 'flex', gap: '10px' }}>
-      <button className="btn" onClick={() => setMode("#0b1220")}>Dark Mode</button>
-      <button className="btn" onClick={() => setMode("#3a506b")}>Blue Mode</button>
+    <div>
+      <button onClick={() => setMode("#0b1220")}>Dark Mode</button>
+      <button onClick={() => setMode("#3a5181")}>Light Mode</button>
     </div>
   );
 }

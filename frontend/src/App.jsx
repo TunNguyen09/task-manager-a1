@@ -7,7 +7,8 @@ import "./css/App.css";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
 import { clearAuthData, isLoggedIn } from "./utils/auth";
-import { Socket } from "./Component/DisplayTasks";
+import Socket from "./Component/ModeSwitch";
+import OnReload from "./Component/OnReload";
 
 function Layout({ children }) {
   function handleLogout() {
@@ -25,6 +26,8 @@ function Layout({ children }) {
             <p className="brandSub">Simple MERN CRUD app</p>
           </div>
         </div>
+
+        <div><Socket /></div>
 
         <nav className="nav">
           <NavLink to="/" end className={({ isActive }) => `navLink ${isActive ? "active" : ""}`}>
@@ -72,7 +75,7 @@ export default function App() {
     <BrowserRouter>
       <Layout>
         <Routes>
-          <Route path="/" element={<><DisplayTasks /> <Socket /> </>} />
+          <Route path="/" element={<DisplayTasks />} />
           <Route path="/add" element={<AddTask />} />
           <Route path="/search" element={<SearchView />} />
           <Route path="/register" element={<Register />} />
@@ -100,6 +103,7 @@ export default function App() {
             }
           />
         </Routes>
+        <OnReload />
       </Layout>
     </BrowserRouter>
   );
