@@ -1,7 +1,7 @@
 # Task Manager Web Application Group 35
 
 ## Overview
-This project is a full stack Task Manager web application built for **CPS 630 – Web Application Development**. The assignment required a MERN application with a React frontend, a Node.js/Express backend, MongoDB database integration, REST API communication, authentication, a polished user interface, and a simple real time feature. According to the assignment sheet, the final submission also needed a README with overview, documentation, and reflection sections. 
+This project is a full stack Task Manager web application built for **CPS 630 – Web Application Development**. The assignment required a MERN application with a React frontend, a Node.js/Express backend, MongoDB database integration, REST API communication, authentication, a polished user interface, and a simple real time feature.
 
 The application lets users create an account, log in, and manage their own tasks. Each authenticated user can add, view, edit, delete, and search tasks. The backend protects task routes with JWT based authentication so users only access their own data, and the project also includes a Socket.io based real time mode/theme communication feature. 
 
@@ -129,16 +129,9 @@ Authentication is handled using JSON Web Tokens. When a user registers or logs i
 - `DELETE /api/tasks/:id` – delete a task
 - `GET /api/search` – search tasks by text and/or category
 
-### Optional testing route
-- `POST /api/setup/demo-user` – create a demo user for testing if it does not already exist 
-
 ## Reflection
 This project helped strengthen our understanding of full stack web development by combining a React frontend, an Express backend, MongoDB data storage, REST API communication, and user authentication in one application. One of the biggest successes was getting the authentication flow working so different users could register, log in, and manage their own tasks securely. Building protected routes and connecting the frontend to the backend also gave us better practical experience with the client server model.
 
 A major challenge was making sure all parts of the application worked together smoothly, especially handling tokens correctly, protecting routes, connecting MongoDB, and keeping the user experience clean across multiple pages. The project also pushed us to think more carefully about validation, error handling, and application structure. Overall, this assignment was a good example of how the MERN stack can be used to build a practical and scalable web application. 
-
-## Notes
-- Make sure MongoDB is running before starting the backend.
-- Run `npm install` separately inside both the `backend` and `frontend` folders.
 
 ---
