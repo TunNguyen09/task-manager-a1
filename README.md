@@ -1,22 +1,144 @@
-# Group 35
-- Overview: We are building a Task Manager web app, where users can view, add, and delete tasks. Not only that user can adjust their due date for the task too. In the future this project can be extened further by adding user accounts and authentication (each user will have their own task list and that task list will be saved on the database). We will implement a  richer task features such as **priorities, categories/tags, search/filter/sort**. It can also be expanded with more input validation and security protections, improving the UI with responsive design.
+# Task Manager Web Application Group 35
 
-- Documentation:
-    - Functions:
-        - View tasks and display when task is due
-        - Add tasks
-        - Edit tasks and deadline
-        - Delete tasks, with error prevention
-        - Search tasks
-        - Log in/Register with authentication
-        - Real-time communication through theme change (dark/light mode)
-    - How to run:
-        - Start server in the back end folder with npm run start
-        - Go to http://localhost:8080
-        - Start react in front end server with npm run dev
-        - It will start at http://locoalhost:5173
-        - App.jsx should be displayed with an Example task
-        - Home page, Add task, and About page can be reached from the top navagation bar
-        - Tasks can be edited and deleted using the buttons
+## Overview
+This project is a full stack Task Manager web application built for **CPS 630 – Web Application Development**. The assignment required a MERN application with a React frontend, a Node.js/Express backend, MongoDB database integration, REST API communication, authentication, a polished user interface, and a simple real time feature. According to the assignment sheet, the final submission also needed a README with overview, documentation, and reflection sections. 
 
-- Reflection: For this assignment, we built a multi-page *Task Manager* web application using Node.js, Express, MongoDB as our back end and React+Vite as our front end. The app allows users to view tasks, add new tasks, and delete tasks. The data is stored on the database MongoDB, and the frontend communicates with the server using GET, POST, and DELETE requests. One of the main successes of this project was getting the client and server to communicate correctly using the REST API. It was satisfying to see tasks update in real time when they were added or deleted. We also successfully created multiple pages and connected them with react router, which helped us understand how routing works. One challenge we faced was making sure all parts of the application worked together smoothly, especially connecting the MongoDB database to store our data. Debugging small issues like incorrect routes or request handling as well as styling pages took some time, but it helped us better understand how web applications function. Overall, this project helped us learn how the client-server model works and gave us practical experience building a simple web application using MERN tech stack.
+The application lets users create an account, log in, and manage their own tasks. Each authenticated user can add, view, edit, delete, and search tasks. The backend protects task routes with JWT based authentication so users only access their own data, and the project also includes a Socket.io based real time mode/theme communication feature. 
+
+## Main Features
+- User registration with validation
+- User login with JWT authentication
+- Logout support by clearing saved auth data in local storage
+- Protected task management for each logged in user
+- Create, read, update, and delete tasks
+- Optional deadlines for tasks
+- Task search by text and category
+- Real-time communication using Socket.io for mode/theme updates
+- Responsive React interface with multiple views/pages and custom styling
+  
+## Tech Stack
+**Frontend**
+- React
+- Vite
+- React Router DOM
+
+**Backend**
+- Node.js
+- Express
+- MongoDB with Mongoose
+- JWT for authentication
+- bcryptjs for password hashing
+- Socket.io for real time communication
+  
+## Project Structure
+```text
+backend/
+  models/
+    Task.js
+    User.js
+  middleware/
+    authMiddleware.js
+  routes/
+    auth.js
+  server.js
+
+frontend/
+  src/
+    Component/
+    css/
+    pages/
+    utils/
+    App.jsx
+    main.jsx
+    SearchView.jsx
+  package.json
+```
+
+## How to Run the Project
+### 1. Clone the repository
+```bash
+git clone <your-repository-url>
+cd task-manager-a1
+```
+
+### 2. Install backend dependencies
+```bash
+cd backend
+npm install
+```
+
+### 3. Create a `.env` file in the `backend` folder
+Add the following values:
+```env
+MONGO_URI=mongodb://localhost:27017/task_manager
+JWT_SECRET=your_jwt_secret_here
+PORT=8080
+```
+The backend uses `MONGO_URI`, `JWT_SECRET`, and `PORT`, with a default local MongoDB connection and port 8080 if values are not provided. 
+
+### 4. Start the backend server
+```bash
+npm run start
+```
+The backend starts on:
+```text
+http://localhost:8080
+```
+
+### 5. Install frontend dependencies
+Open a new terminal:
+```bash
+cd frontend
+npm install
+```
+
+### 6. Start the frontend
+```bash
+npm run dev
+```
+The frontend runs through Vite, typically on:
+```text
+http://localhost:5173
+```
+The Socket.io server configuration also allows requests from this frontend origin. 
+
+## How to Use the App
+1. Register a new account.
+2. Log in with your email and password.
+3. After logging in, create tasks with optional deadlines.
+4. View your saved task list.
+5. Edit task text or due dates.
+6. Delete tasks you no longer need.
+7. Search tasks by keyword or category.
+8. Log out when finished. Authentication data is stored in local storage and can be cleared on logout.
+
+## Authentication
+Authentication is handled using JSON Web Tokens. When a user registers or logs in successfully, the backend returns a token and basic user data. Protected routes require an `Authorization: Bearer <token>` header. The frontend includes helper functions to save the token, get the logged in user, attach auth headers, and clear authentication data for logout. 
+
+## API Endpoints
+### Authentication
+- `POST /api/auth/register` – create a new user account
+- `POST /api/auth/login` – log in an existing user
+- `GET /api/auth/me` – get the currently logged in user
+
+### Tasks
+- `GET /api/tasks` – get all tasks for the logged in user
+- `GET /api/tasks/:id` – get one task by id
+- `POST /api/tasks` – create a new task
+- `PATCH /api/tasks/:id` – update a task
+- `DELETE /api/tasks/:id` – delete a task
+- `GET /api/search` – search tasks by text and/or category
+
+### Optional testing route
+- `POST /api/setup/demo-user` – create a demo user for testing if it does not already exist 
+
+## Reflection
+This project helped strengthen our understanding of full stack web development by combining a React frontend, an Express backend, MongoDB data storage, REST API communication, and user authentication in one application. One of the biggest successes was getting the authentication flow working so different users could register, log in, and manage their own tasks securely. Building protected routes and connecting the frontend to the backend also gave us better practical experience with the client server model.
+
+A major challenge was making sure all parts of the application worked together smoothly, especially handling tokens correctly, protecting routes, connecting MongoDB, and keeping the user experience clean across multiple pages. The project also pushed us to think more carefully about validation, error handling, and application structure. Overall, this assignment was a good example of how the MERN stack can be used to build a practical and scalable web application. 
+
+## Notes
+- Make sure MongoDB is running before starting the backend.
+- Run `npm install` separately inside both the `backend` and `frontend` folders.
+
+---
