@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { getAuthHeaders } from "./utils/auth";
+import { getAuthHeaders, isLoggedIn } from "./utils/auth";
 import SearchTask from "./Component/SearchTask";
 
 export default function SearchView() {
@@ -60,7 +60,7 @@ export default function SearchView() {
           />
         )}
 
-        <button className="btn btnPrimary" onClick={handleSearch}>
+        <button className="btn btnPrimary" onClick={handleSearch} disabled={!isLoggedIn()}>
           Search
         </button>
         

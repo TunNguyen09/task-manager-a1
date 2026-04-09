@@ -230,7 +230,7 @@ app.get("/api/search", authMiddleware, async (req, res) => {
   try {
     const tasks = await Task.find(query);
     res.json(tasks);
-  } catch (err) {
+  } catch (error) {
     res.status(500).json({ error: "Search failed" });
   }
 });
