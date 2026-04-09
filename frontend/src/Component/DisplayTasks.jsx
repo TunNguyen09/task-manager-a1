@@ -179,7 +179,9 @@ export default function DisplayTasks() {
 
       <form onSubmit={handleAddTask}>
         <div className="row">
+          <label htmlFor="task-name" className="acc">Task Name</label>
           <input
+            id="task-name"
             className="input"
             type="text"
             name="text"
@@ -188,7 +190,9 @@ export default function DisplayTasks() {
             onChange={handleChange}
           />
 
+          <label htmlFor="task-date" className="acc">Date</label>
           <input
+            id="task-date"
             className="input"
             type="date"
             name="deadline"
@@ -196,7 +200,9 @@ export default function DisplayTasks() {
             onChange={handleChange}
           />
 
+          <label htmlFor="select-cate" className="acc">Seleact Category</label>
           <select
+            id="select-cate"
             className="input"
             name="category"
             value={formData.category}
