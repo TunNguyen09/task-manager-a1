@@ -68,12 +68,14 @@ export default function Login() {
 
   return (
     <div className="pageShell">
-      <div className="card">
+      <div className="logRes">
         <h1>Login</h1>
         <p className="muted">Sign in to access your tasks.</p>
 
         <form onSubmit={handleSubmit} className="formStack">
+          <label htmlFor="login-email" className="acc">Login Email</label>
           <input
+            id="login-email"
             type="email"
             name="email"
             placeholder="Email"
@@ -81,7 +83,9 @@ export default function Login() {
             onChange={handleChange}
           />
 
+          <label htmlFor="login-password" className="acc">Login Password</label>
           <input
+            id="login-password"
             type="password"
             name="password"
             placeholder="Password"

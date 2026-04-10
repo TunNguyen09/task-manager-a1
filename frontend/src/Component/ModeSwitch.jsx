@@ -22,7 +22,7 @@ export default function Socket() {
   return (
     <div>
       <button className='mode' onClick={() => setMode("#0b1220")}>🌙</button>
-      <button className='mode' onClick={() => setMode("#3a5181")}>☀️</button>
+      <button className='mode' onClick={() => setMode("#2e4472")}>☀️</button>
     </div>
   );
 }

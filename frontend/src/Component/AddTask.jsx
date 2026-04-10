@@ -64,7 +64,9 @@ export default function AddTask() {
 
       <form onSubmit={handleSubmit}>
         <div className="row">
+          <label htmlFor="task-title" className="acc">Task title</label>
           <input
+            id="task-title"
             className="input"
             type="text"
             name="text"
@@ -73,7 +75,9 @@ export default function AddTask() {
             onChange={handleChange}
           />
 
+          <label htmlFor="deadline-input" className="acc">Deadline</label>
           <input
+            id="deadline-input"
             className="input"
             type="date"
             name="deadline"
@@ -81,7 +85,9 @@ export default function AddTask() {
             onChange={handleChange}
           />
 
+          <label htmlFor="category-select" className="acc">Select Category</label>
           <select
+              id="category-select"
               className="input"
               name="category"
               value={formData.category}

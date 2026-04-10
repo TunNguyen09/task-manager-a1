@@ -33,14 +33,18 @@ export default function SearchView() {
       <h2>Search Tasks</h2>
 
       <div className="row">
+        <label htmlFor="search-task-name" className="acc">Search by task name</label>
         <input
+          id="search-task-name"
           className="input"
           placeholder="Search by task name..."
           value={query}
           onChange={(e) => setQuery(e.target.value)}
         />
 
+        <label htmlFor="search-category" className="acc">Search by category</label>
         <select
+          id="search-category"
           className="input"
           value={category}
           onChange={(e) => setCategory(e.target.value)}

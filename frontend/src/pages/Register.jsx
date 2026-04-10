@@ -75,12 +75,14 @@ export default function Register() {
 
   return (
     <div className="pageShell">
-      <div className="card">
+      <div className="logRes">
         <h1>Create Account</h1>
         <p className="muted">Register to start managing your own tasks.</p>
 
         <form onSubmit={handleSubmit} className="formStack">
+          <label htmlFor="register-username" className="acc">Username</label>
           <input
+            id="register-username"
             type="text"
             name="username"
             placeholder="Username"
@@ -88,7 +90,9 @@ export default function Register() {
             onChange={handleChange}
           />
 
+          <label htmlFor="register-email" className="acc">Email</label>
           <input
+            id="register-email"
             type="email"
             name="email"
             placeholder="Email"
@@ -96,7 +100,9 @@ export default function Register() {
             onChange={handleChange}
           />
 
+          <label htmlFor="register-password" className="acc">Password</label>
           <input
+            id="register-password"
             type="password"
             name="password"
             placeholder="Password"
@@ -104,7 +110,9 @@ export default function Register() {
             onChange={handleChange}
           />
 
+          <label htmlFor="register-retype-password" className="acc">Retype password</label>
           <input
+            id="register-retype-password"
             type="password"
             name="password2"
             placeholder="Type your password again"

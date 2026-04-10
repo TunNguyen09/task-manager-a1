@@ -15,7 +15,7 @@ The application lets users create an account, log in, and manage their own tasks
 - Task search by text and category
 - Real-time communication using Socket.io for mode/theme updates
 - Responsive React interface with multiple views/pages and custom styling
-- UI informed by Nielsen principles (error prevention, error messages, simple UI, accessibility)
+- UI informed by Nielsen principles (error prevention, error messages, simple UI, accessibility,...)
   
 ## Tech Stack
 **Frontend**
