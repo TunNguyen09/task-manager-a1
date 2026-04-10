@@ -214,15 +214,6 @@ a:hover {
   padding: 2rem;
 }
 
-.card {
-  width: 100%;
-  max-width: 500px;
-  padding: 2rem;
-  border-radius: 16px;
-  background: rgba(255, 255, 255, 0.04);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-}
-
 .formStack {
   display: flex;
   flex-direction: column;

@@ -6,6 +6,8 @@ import "../css/App.css";
 export default function SearchTask({ tasks, onRefresh }) {
   const [toast, setToast] = useState({ type: "", msg: "" });
 
+  const [loading, setLoading] = useState(true);
+
   const [editingId, setEditingId] = useState(null);
   const [editText, setEditText] = useState("");
   const [editTime, setEditTime] = useState("");
@@ -17,6 +19,10 @@ export default function SearchTask({ tasks, onRefresh }) {
     window.clearTimeout(showToast._t);
     showToast._t = window.setTimeout(() => setToast({ type: "", msg: "" }), 2200);
   };
+
+  useEffect(() => {
+    onRefresh();
+  }, []);
 
   const startEdit = (task) => {
     setEditingId(task.id);
@@ -51,7 +57,7 @@ export default function SearchTask({ tasks, onRefresh }) {
       if (response.ok) {
         setEditingId(null);
         showToast("success", "Task updated successfully!");
-        if (onRefresh) onRefresh(); // Tells parent to update the search results
+        await onRefresh();
       } else {
         showToast("error", data.error || "Update failed.");
       }
@@ -61,7 +67,8 @@ export default function SearchTask({ tasks, onRefresh }) {
   };
 
   const handleDeleteTask = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this task?")) return;
+    const ok = window.confirm("Delete this task?");
+    if (!ok) return;
 
     try {
       const response = await fetch(`/api/tasks/${id}`, {
@@ -69,14 +76,17 @@ export default function SearchTask({ tasks, onRefresh }) {
         headers: getAuthHeaders(),
       });
 
-      if (response.ok) {
-        showToast("success", "Task deleted!");
-        if (onRefresh) onRefresh();
-      } else {
-        showToast("error", "Failed to delete.");
+      if (!response.ok) {
+        const result = await response.json().catch(() => ({}));
+        showToast("error", result.error || "Could not delete task.");
+        return;
       }
+
+      showToast("success", "Task deleted.");
+      await onRefresh();
     } catch (err) {
-      showToast("error", "Server error.");
+      console.error(err);
+      showToast("error", "Could not connect to server.");
     }
   };
 
@@ -139,12 +149,15 @@ export default function SearchTask({ tasks, onRefresh }) {
                 <>
                   <p className="taskTitle">{task.text}</p>
                   <div className="taskMeta">
-                    <span className="badge">{task.category || "General"}</span>
-                    {task.deadline && (
-                      <span className="badge">
-                        Due: <CheckTime time={task.deadline} />
-                      </span>
-                    )}
+                    <span className="badge">
+                      Category: {task.category || "None"}
+                    </span>
+                  </div>
+  
+                  <div className="taskMeta">
+                    <span className="badge">
+                      Due: <CheckTime time={task.deadline} />
+                    </span>
                   </div>
                 </>
               )}

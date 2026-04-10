@@ -26,6 +26,8 @@ export default function SearchView() {
     setResults(data);
   };
 
+  const refreshResults = () => handleSearch();
+
   return (
     <div className="card">
       <h2>Search Tasks</h2>
@@ -64,8 +66,9 @@ export default function SearchView() {
           Search
         </button>
         
-        <SearchTask tasks={results} />
       </div>
+      
+      <SearchTask tasks={results} onRefresh={refreshResults} />
     </div>
   );
 }
