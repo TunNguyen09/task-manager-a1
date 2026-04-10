@@ -118,7 +118,7 @@ export default function DisplayTasks() {
     setEditText(task.text || "");
     setEditTime(task.deadline ? String(task.deadline).slice(0, 10) : "");
     // If category is one of the predefined ones:
-    if (task.category === "work" || task.category === "school" || task.category === "") {
+    if (task.category === "Work" || task.category === "School" || task.category === "Personal" || task.category === "") {
       setEditCategory(task.category);
       setEditCustomCategory("");
     } else {
@@ -211,6 +211,7 @@ export default function DisplayTasks() {
             <option value="">Select category</option>
             <option value="Work">Work</option>
             <option value="School">School</option>
+            <option value="Personal">Personal</option>
             <option value="Other">Other…</option>
           </select>
 
