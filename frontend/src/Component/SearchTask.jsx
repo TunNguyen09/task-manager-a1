@@ -1,12 +1,11 @@
 import { useEffect, useState } from "react";
 import CheckTime from "./CheckTime";
 import { getAuthHeaders } from "../utils/auth";
+import { isLoggedIn } from "../utils/auth";
 import "../css/App.css";
 
 export default function SearchTask({ tasks, onRefresh }) {
   const [toast, setToast] = useState({ type: "", msg: "" });
-
-  const [loading, setLoading] = useState(true);
 
   const [editingId, setEditingId] = useState(null);
   const [editText, setEditText] = useState("");
@@ -21,7 +20,9 @@ export default function SearchTask({ tasks, onRefresh }) {
   };
 
   useEffect(() => {
-    onRefresh();
+    if (isLoggedIn()) {
+      onRefresh();
+    }
   }, []);
 
   const startEdit = (task) => {
