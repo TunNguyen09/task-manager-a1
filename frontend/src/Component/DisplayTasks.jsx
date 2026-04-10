@@ -64,7 +64,7 @@ export default function DisplayTasks() {
     const newTask = {
       text: formData.text.trim(),
       deadline: formData.deadline || null,
-      category: formData.category === "other" ? formData.customCategory : formData.category,
+      category: formData.category === "Other" ? formData.customCategory : formData.category,
     };
 
     try {
@@ -123,7 +123,7 @@ export default function DisplayTasks() {
       setEditCustomCategory("");
     } else {
       // Otherwise it's a custom category
-      setEditCategory("other");
+      setEditCategory("Other");
       setEditCustomCategory(task.category);
     }
   };
@@ -142,7 +142,7 @@ export default function DisplayTasks() {
       return;
     }
 
-    const updatedCategory = editCategory === "other" ? editCustomCategory : editCategory;
+    const updatedCategory = editCategory === "Other" ? editCustomCategory : editCategory;
 
     try {
       const response = await fetch(`/api/tasks/${taskId}`, {
@@ -209,12 +209,12 @@ export default function DisplayTasks() {
             onChange={handleChange}
           >
             <option value="">Select category</option>
-            <option value="work">Work</option>
-            <option value="school">School</option>
-            <option value="other">Other…</option>
+            <option value="Work">Work</option>
+            <option value="School">School</option>
+            <option value="Other">Other…</option>
           </select>
 
-          {formData.category === "other" && (
+          {formData.category === "Other" && (
             <input
               className="input"
               type="text"

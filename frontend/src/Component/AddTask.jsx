@@ -24,7 +24,7 @@ export default function AddTask() {
     }
 
     const finalCategory =
-      formData.category === "other"
+      formData.category === "Other"
         ? formData.customCategory
         : formData.category;
 
@@ -94,7 +94,7 @@ export default function AddTask() {
               <option value="Other">Other...</option>
             </select>
 
-            {formData.category === "other" && (
+            {formData.category === "Other" && (
               <input
                 className="input"
                 type="text"
